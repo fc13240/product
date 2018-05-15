@@ -20,11 +20,13 @@ import (
 	productGallery "product/gallery/action"
 	productTitle "product/title/action"
 	productAttr "product/attr/action"
+	productSize "product/size/action"
 
 	lazada  "product/lazada/action"
 	shopee "product/shopee/action"
 	ezbuy "product/ezbuy/action"
 	alibaba "product/alibaba/action"
+	ebay "product/ebay/action"
 
 )
 var (
@@ -47,11 +49,11 @@ func init() {
 	api.GET("/item/:sku/skuusestatus",product.GetSkuUseStatus) //sku use status
 	api.GET("/item/:sku/categoryinfo",product.GetItemCategoryInfo) //sku use status
 	
-	api.POST("/item/:sku", product.Save)
-	api.PUT("/item/:sku/eidtfield",product.SaveField)
-	api.POST("/item/edit", product.EditBase)
+	api.POST("/item", product.Save)
+	api.PUT("/item/:sku/editfield",product.SaveField)
+	api.PUT("/item", product.EditBase)
 	api.POST("/item/del",product.DelItem)
-	api.GET( "/item/:sku", product.Detail) 
+	api.GET("/item/:sku", product.Detail) 
 
 	//product gallery 
 	api.POST("/item/images", productGallery.Images)  //图片列表
@@ -61,8 +63,8 @@ func init() {
 	api.POST("/item/image/flag",productGallery.SetImageFlag) //设置标签
 
 	//product labal
-	api.GET("/item/:sku/labels",product.Labels)
-	api.POST("/item/label/logs",product.LabelLogs)
+	api.GET("/items/labels",product.Labels)
+	api.GET("/item/:sku/label/logs",product.GetLabelLogs)
 	api.POST("/item/label/log",product.AddLabelLog)
 	
 	//shop channels
@@ -72,7 +74,6 @@ func init() {
 	api.GET("/platform/:platform/category/:cid",product.GetPlatformCategorys)
 	api.GET("/platform/:platform/category/:cid/selected",product.GetPlatformCategorySelected)
 	
-
 	//product tag
 	api.POST("/item/tag", product.AddToTag)
 	api.DELETE("/item/tag", product.RemToTag)        
@@ -90,26 +91,26 @@ func init() {
 	api.GET("/items/categorys/childs/:pid",productCategory.Categorys)
 	api.PUT("/items/categorys/attrs/:platform/:cid",productCategory.SetAttr)
 	api.GET("/items/categorys/attrs/:platform/:cid",productCategory.GetAttrIds)
-	api.POST("/items/categorys/attrs",product.GetCategoryAttrs)
+	api.POST("/items/categorys/attrs",productAttr.GetCategoryAttrs)
 
 	//product attr
 	api.GET("/items/attrs",productAttr.GetAttrs)
 	api.POST("/items/attrs",productAttr.AddAttr)
 	api.GET("/items/attrs/packagefill",productAttr.PackageFill)
 
-	api.POST("/item/attr/options",productAttr.AddAttrOpt)
-	api.GET("/item/attr/:attid/options",productAttr.GetAttOptions)
+	api.POST("/items/attr/options",productAttr.AddAttrOpt)
+	api.GET("/items/attr/:attid/options",productAttr.GetAttOptions)
 
 	//product attr value
+	api.GET("/item/:sku/attr",productAttr.GetSkuSelectedOptions)
 	api.POST("/item/attr/values",productAttr.SaveAttrVal)
 	api.GET("/item/:sku/attr/:attrid/values",productAttr.GetAttrVal)
 	api.GET("/item/:sku/attr/:attrid/values/selected",productAttr.GetOneAttrSelectedOption)
-	api.GET("/item/:sku/attr/values",productAttr.GetSkuSelectedOptions)
-
+	
 
 	//product size
-	api.POST("/item/size/template",product.SaveSizeTemplate)
-	api.GET("/item/size/template/:item_id",product.GetSizeTemplate)
+	api.POST("/item/size/template",productSize.SaveSizeTemplate)
+	api.GET("/item/:sku/size/template",productSize.GetSizeTemplate)
 
 	//product title 
 	api.POST("/items/titles",productTitle.TitleKeywordSearch)
@@ -122,9 +123,10 @@ func init() {
 	//api.GET("/warehouse.productinfo", GetWarehouseProductInfo)
 	//alibaiba
 
+
 	//product fee
 	api.GET("/item/:sku/fees",productFees.Listing)
-	api.PUT("/item/fees",productFees.Edit)
+	api.PUT("/item/:sku/fees",productFees.Edit)
 	api.POST("/item/fees",productFees.Add)
 	
 	//country
@@ -138,7 +140,7 @@ func init() {
 	api.GET("/alibaba/get",alibaba.Get)
 	api.GET("/alibaba/getsource",alibaba.BySource)
 	api.POST("/alibaba/sources",alibaba.Sources)
-	api.DELETE("/alibaba/delsource",alibaba.DelSource)
+	api.DELETE("/alibaba/:id/delsource",alibaba.DelSource)
 	api.POST("/alibaba/downsource",alibaba.DownSource)
 	api.POST("/alibaba/set",alibaba.Set)
 	api.POST("/alibaba/sellers",alibaba.Sellers)
@@ -193,13 +195,13 @@ func init() {
 
 	//shopee api
 	api.POST("/shopee/items",shopee.SaveProduct)
-	api.GET("/shopee/items/:sku",Get)
+	api.GET("/shopee/items/:sku",shopee.Get)
 	api.DELETE("/shopee/remote/item/:sku",shopee.DelRemoteItem)
 	api.PUT("/shopee/remote/item/:sku",shopee.AddRemoteItem)
 
 	//platform  ebay
-	api.POST("/ebay/bind", product.BindEbay)
-	api.POST("/ebay/upload",product.SaveToEbay)
+	api.POST("/ebay/bind", ebay.BindEbay)
+	api.POST("/ebay/upload",ebay.SaveToEbay)
 
 	//member
 	api.POST("/account/create", member.CreateAccount)
